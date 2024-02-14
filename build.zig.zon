@@ -1,0 +1,11 @@
+.{
+    .name = "libcap-ng",
+    .version = "0.8.4",
+    .paths = .{"."},
+    .dependencies = .{
+        .@"libcap-ng" = .{
+            .url = "https://people.redhat.com/sgrubb/libcap-ng/libcap-ng-0.8.4.tar.gz",
+            .hash = "1220a06039f203b43526577b3c6fdfebd78a37ec3535e01adee3dc8334a5a4a27f85",
+        },
+    },
+}
