@@ -74,9 +74,8 @@ pub fn build(b: *std.Build) void {
 
     libcap.addCSourceFiles(.{
         .files = &.{
-            // TODO: replace with the following line once https://github.com/stevegrubb/libcap-ng/pull/49 is merged
-            //source.path("src/cap-ng.c").getPath(source.builder),
-            b.pathFromRoot("src/cap-ng.c"),
+            source.path("src/cap-ng.c").getPath(source.builder),
+            source.path("src/lookup_table.c").getPath(source.builder),
         },
         .flags = &.{ "-D_GNU_SOURCE" },
     });
