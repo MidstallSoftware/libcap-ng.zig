@@ -3,7 +3,7 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const linkage = b.option(std.Build.Step.Compile.Linkage, "linkage", "whether to statically or dynamically link the library") orelse .static;
+    const linkage = b.option(std.builtin.LinkMode, "linkage", "whether to statically or dynamically link the library") orelse @as(std.builtin.LinkMode, if (target.result.isGnuLibC()) .dynamic else .static);
 
     const source = b.dependency("libcap-ng", .{});
 
@@ -73,11 +73,12 @@ pub fn build(b: *std.Build) void {
     libcap.addIncludePath(source.path("src"));
 
     libcap.addCSourceFiles(.{
+        .root = source.path("src"),
         .files = &.{
-            source.path("src/cap-ng.c").getPath(source.builder),
-            source.path("src/lookup_table.c").getPath(source.builder),
+            "cap-ng.c",
+            "lookup_table.c",
         },
-        .flags = &.{ "-D_GNU_SOURCE" },
+        .flags = &.{"-D_GNU_SOURCE"},
     });
 
     {
@@ -107,10 +108,8 @@ pub fn build(b: *std.Build) void {
     libdrop_ambient.addConfigHeader(configHeader);
     libdrop_ambient.addIncludePath(source.path("src"));
 
-    libdrop_ambient.addCSourceFiles(.{
-        .files = &.{
-            source.path("src/libdrop_ambient.c").getPath(source.builder),
-        },
+    libdrop_ambient.addCSourceFile(.{
+        .file = source.path("src/libdrop_ambient.c"),
     });
 
     b.installArtifact(libdrop_ambient);
